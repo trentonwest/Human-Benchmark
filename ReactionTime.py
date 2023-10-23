@@ -1,22 +1,28 @@
 import pyautogui
-from PIL import ImageGrab
 import time
+import win32api
+import win32con
 
-x, y = 500, 500
+point = 500, 500
 #make this any pixel inside the color changing area
 #use PrintCoords.py if you need to find the coordinates
 
-pyautogui.click(x, y)
-screenshot = pyautogui.screenshot(region=(x, y, x + 1, y + 1))
-o_color = screenshot.getpixel((0, 0))
+def click(point):
+    x,y=point
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+
+
+pyautogui.click(point)
+x,y=point
 count=1
 while True:
-    new_color = pyautogui.screenshot(region=(x, y, x + 1, y + 1))
-    if new_color != (206,38,54):
-        pyautogui.click()
+    new_color = pyautogui.pixel(x,y)
+    if new_color[1] >= 200:
+        click(point)
         time.sleep(1)
         if count==5:
             break
-        pyautogui.click()
+        click(point)
         count+=1
         
